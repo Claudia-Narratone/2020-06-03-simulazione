@@ -5,9 +5,14 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Opponent;
+import it.polito.tdp.PremierLeague.model.Player;
+import it.polito.tdp.PremierLeague.model.TopPlayer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,17 +49,48 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	double goal;
+    	try {
+			goal=Double.parseDouble(txtGoals.getText());
+		} catch (NumberFormatException e) {
+			txtResult.appendText("ERRORE: Devi inserire un numero");
+			return;
+		}
+    	model.creaGrafo(goal);
+    	txtResult.appendText("Grafo creato\n");
+    	txtResult.appendText("# VERTICI: " + this.model.nVertici() + "\n");
+    	txtResult.appendText("# ARCHI: " + this.model.nArchi());
     }
 
     @FXML
     void doDreamTeam(ActionEvent event) {
-
+    	txtResult.clear();
+    	int K;
+    	try {
+			K=Integer.parseInt(txtK.getText());
+		} catch (NumberFormatException e) {
+			txtResult.appendText("ERRORE: Devi inserire un numero");
+			return;
+		}
+    	List<Player> result=new ArrayList<Player>(model.getDreamTeam(K));
+    	txtResult.appendText("DREAM TEAM: \n");
+    	for (Player p:result) {
+			txtResult.appendText(p+"\n");
+		}
+    	txtResult.appendText("Grado di titolarità: "+model.getBestDegree());
     }
 
     @FXML
     void doTopPlayer(ActionEvent event) {
-
+    	txtResult.clear();
+    	TopPlayer topPlayer=model.trovaTopPlayer();
+    	txtResult.appendText("TOP PLAYER: "+topPlayer.getPlayer()+"\n\n");
+    	txtResult.appendText("Giocatori battuti: \n");
+    	for(Opponent o:topPlayer.getOpponents()) {
+    		txtResult.appendText(o.toString()+"\n");
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
